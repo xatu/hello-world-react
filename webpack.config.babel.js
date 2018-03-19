@@ -1,7 +1,7 @@
 //Depdencies
 import webpack from 'webpack'
 import path from 'path'
-//import ChunksPlugin from 'webpack-split-chunks'
+import ChunksPlugin from 'webpack-split-chunks'
 
 //Environment
 const isDevelopment = process.env.NODE_ENV !== 'production'
@@ -32,7 +32,12 @@ const getOutput = () => ({
 })
 
 const getPlugins = () =>{
-  const plugins = []
+  const plugins = [
+    new ChunksPlugin({
+      to: 'vendor',
+      test: /node_modules/
+    })
+  ]
   if (isDevelopment) {
     plugins.push(
       new webpack.HotModuleReplacementPlugin(),
@@ -44,7 +49,7 @@ const getPlugins = () =>{
         compress: {
           screw_ie8: true,
           warnings: false
-        }
+         }
       })
     )
   }
@@ -87,6 +92,5 @@ export default {
   entry: getEntry(),
   output: getOutput(),
   plugins: getPlugins(),
-  optimization: getOptimization(),
   module: getLoaders()
 }
